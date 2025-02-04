@@ -1,0 +1,74 @@
+{
+  "folderName": "bigfolder",
+  "subFolders": [
+    {
+      "folderName": "bigfolder_2",
+      "subFolders": [
+        {
+          "folderName": "bigfolder_3",
+          "subFolders": [
+            {
+              "folderName": "bigfolder_4",
+              "subFolders": [
+
+              ],
+              "files": [
+                {
+                  "fileName": "file_9"
+                },
+                {
+                  "fileName": "file_10"
+                },
+                {
+                  "fileName": "file_11"
+                }
+
+              ]
+
+            }
+          ],
+          "files": [
+            {
+              "fileName": "file_6"
+            },
+            {
+              "fileName": "file_7"
+            },
+            {
+              "fileName": "file_8"
+            }
+
+          ]
+
+        }
+      ],
+      "files": [
+        {
+          "fileName": "file_3"
+        },
+        {
+          "fileName": "file_4"
+        },
+        {
+          "fileName": "file_5"
+        }
+
+      ]
+
+    }
+
+  ],
+  "files": [
+    {
+      "fileName": "file_1"
+    },
+    {
+      "fileName": "file_2"
+    },
+    {
+      "fileName": "file_3"
+    }
+
+  ]
+
+}

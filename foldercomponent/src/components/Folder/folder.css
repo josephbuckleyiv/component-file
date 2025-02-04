@@ -1,0 +1,4 @@
+.hover-class:hover {
+    background-color: var(--bs-secondary-bg-subtle);
+    cursor: pointer;
+}
