@@ -1,3 +1,4 @@
+import internal from "stream"
 
 
 export type Folder = {
@@ -14,8 +15,13 @@ export type File = {
 }
 
 export type DragInfo = {
-    fileName: string,
-    parentFiles: File[]
+    objectName: string,
+    subObjects: Object[],
+    hasChildren: boolean,
+    depth: number,
+    isExpanded: boolean,
+    rerenderDragged: React.Dispatch<React.SetStateAction<boolean>>,
+    parent: Object[]
 }
 
 export type DragContextType = {
@@ -29,3 +35,13 @@ export type SelectionContextType = {
     fileToShow: any,
     getFile: any
 }
+
+export type Object = {
+    objectName: string,
+    subObjects: Object[],
+    isExpanded?: boolean,
+    hasChildren: boolean,
+    depth?: number
+}
+
+export type BorderLocation = "top" | "bottom";

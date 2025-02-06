@@ -2,3 +2,7 @@
     background-color: var(--bs-secondary-bg-subtle);
     cursor: pointer;
 }
+
+.draggable-class {
+    cursor: grab;
+}

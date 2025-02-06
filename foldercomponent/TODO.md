@@ -1,10 +1,13 @@
 # TODO
 
 
-## Implement Drag
+## Implement Drag CHECK
 
-### Proper underlining
-### Proper Dragging
+### Proper underlining CHECK
+### Proper Dragging CHECK
+
+### ISSUE drop parent inside itself.
+### ISSUE objects with the same name. Use id to resolve placement.
 
 
 ## Copy Functionality

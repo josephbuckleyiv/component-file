@@ -1,0 +1,84 @@
+{
+    "objectName": "big_object_1",
+  "subObjects": [
+    {
+      "objectName": "big_object_2",
+      "hasChildren": false
+    },
+    {
+      "objectName": "big_object_3",
+      "subObjects": [
+
+        {
+          "objectName": "smaller_object_4",
+          "hasChildren": false
+        },
+        {
+          "objectName": "smaller_object_5",
+          "hasChildren": false
+        },
+        {
+          "objectName": "smaller_object_6",
+          "hasChildren": false
+        }
+
+      ],
+
+      "hasChildren": true
+    },
+    {
+      "objectName": "smaller_object_1",
+      "hasChildren": false
+    },
+    {
+      "objectName": "smaller_object_2",
+      "hasChildren": false
+    },
+    {
+      "objectName": "smaller_object_3",
+      "hasChildren": false
+    },
+    {
+      "objectName": "big_object_2",
+      "hasChildren": false
+    },
+    {
+      "objectName": "big_object_4",
+      "subObjects": [
+
+        {
+          "objectName": "smaller_object_4",
+          "hasChildren": false
+        },
+        {
+          "objectName": "smaller_object_5",
+          "hasChildren": false
+        },
+        {
+          "objectName": "smaller_object_6",
+          "hasChildren": false
+        }
+
+      ],
+
+      "hasChildren": true
+    },
+    {
+      "objectName": "smaller_object_1",
+      "hasChildren": false
+    },
+    {
+      "objectName": "smaller_object_2",
+      "hasChildren": false
+    },
+    {
+      "objectName": "smaller_object_6",
+      "hasChildren": false
+    }
+
+  ],
+
+    "hasChildren": true
+
+
+}
