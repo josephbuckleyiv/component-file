@@ -15,6 +15,7 @@ export type File = {
 }
 
 export type DragInfo = {
+    id: string,
     objectName: string,
     subObjects: Object[],
     hasChildren: boolean,
@@ -37,6 +38,7 @@ export type SelectionContextType = {
 }
 
 export type Object = {
+    id: string,
     objectName: string,
     subObjects: Object[],
     isExpanded?: boolean,

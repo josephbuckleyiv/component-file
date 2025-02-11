@@ -7,39 +7,76 @@ export const useDrag = () => {
     const dragObject = useRef<DragInfo | null>(null);
     const borderLocation = useRef<BorderLocation | null>(null);
     const borderSemaphore = useRef<number>(0);
+    const dragOverDiv = useRef<string | null>(null);
     console.log(borderSemaphore.current)
 
-    const dragOver = useCallback((id: string, objectName: string, draggingObj: DragInfo , event: React.DragEvent<HTMLDivElement>) => {
-        const dropDive = document.getElementById(id);
-        if (dragObject.current == null) { dragObject.current = draggingObj }
-        if (dropDive == null) { console.log("hello"); return };
-        event.dataTransfer.effectAllowed = "move";
-        console.log(borderSemaphore.current)
-        const rect = dropDive.getBoundingClientRect();
-        const top = rect.top;
-        //setDragInfo({ dragObject: fileName, position: { x: 0, y: 0 } });
 
-        if (borderSemaphore.current) return;
-        if ( Math.abs(event.clientY - top) < 12) {
-            if (!dropDive.classList.contains('border-top')) {
-                dropDive.classList.add('border-top');
-                dropDive.classList.add('border-black');
-                borderSemaphore.current++;
+
+    const dragOver = useCallback((id: string, objectName: string, draggingObj: DragInfo , event: React.DragEvent<HTMLDivElement>) => {
+
+        if (dragOverDiv.current == null) {
+            dragOverDiv.current = id;
+        }
+
+        const dropDiv = document.getElementById(dragOverDiv.current);
+
+
+        if (dragObject.current == null) { dragObject.current = draggingObj }
+        if (dropDiv == null) { return };
+        const rect = dropDiv.getBoundingClientRect();
+        const top = rect.y;
+
+        // This for dragging sensitivity
+        if (borderLocation.current == null && top + 11  > event.clientY && event.clientY > top + dropDiv.offsetHeight -11 ) {
+            dropDiv.classList.remove('border-top');
+            dropDiv.classList.remove('border-primary');
+            borderSemaphore.current = 0;
+            borderLocation.current = null;
+        }
+        else if (borderLocation.current == "top" && Math.abs(event.clientY - top) > 11) {
+            dropDiv.classList.remove('border-top');
+            dropDiv.classList.remove('border-primary');
+            console.log("here top")
+            console.log(event.clientY - top)
+            borderSemaphore.current = 0;
+            borderLocation.current = null;
+        }
+        else if (borderLocation.current == "bottom" && Math.abs(event.clientY - top - dropDiv.offsetHeight) > 11) {
+            dropDiv.classList.remove('border-bottom');
+            dropDiv.classList.remove('border-primary');
+            borderSemaphore.current = 0;
+            console.log("here bottom")
+            borderLocation.current = null;
+        }
+
+
+        if (borderLocation.current) return;
+        
+        if ( Math.abs(event.clientY - top) < 10) {
+            if (!dropDiv.classList.contains('border-top')) {
+                dropDiv.classList.add('border-top');
+                dropDiv.classList.add('border-black');
+            }
+
+                borderSemaphore.current = 1;
                 borderLocation.current = "top";
-            }
         }
-        else if (Math.abs(event.clientY - top - dropDive.offsetHeight) < 12) {
-            if (!dropDive.classList.contains('border-bottom')) {
-                dropDive.classList.add('border-bottom');
-                dropDive.classList.add('border-black');
-                borderSemaphore.current++;
-                borderLocation.current = "bottom";
+        else if (Math.abs(event.clientY - top - dropDiv.offsetHeight) < 10) {
+            //console.log("here bottom", event.clientY, top,  dropDive.offsetHeight)
+            if (!dropDiv.classList.contains('border-bottom')) {
+                dropDiv.classList.add('border-bottom');
+                dropDiv.classList.add('border-black');
             }
+            borderSemaphore.current = 1;
+            borderLocation.current = "bottom";
         }
+        
         else {
-            dropDive.classList.remove('border-top');
-            dropDive.classList.remove('border-bottom');
-            dropDive.classList.remove('border-primary');
+            dropDiv.classList.remove('border-top');
+            dropDiv.classList.remove('border-bottom');
+            dropDiv.classList.remove('border-primary');
+            borderLocation.current = null;
+
         }
 
     }, []);
@@ -53,7 +90,7 @@ export const useDrag = () => {
         dropDive.classList.remove('border-primary');
         borderSemaphore.current = 0;
         borderLocation.current = null;
-
+        dragOverDiv.current = null;
     }, []);
 
   
@@ -65,53 +102,76 @@ export const useDrag = () => {
     // drag class
 
     // We refresh depending on whose depth is the most.
-    const dragEnd = (id: string, rerender: React.Dispatch<React.SetStateAction<boolean>>, dropLocation: string, dropLocationDepth: number, dragLocationParents: Object[]) => {
-        const dropThisSucker = dragObject.current;
-        if (dropThisSucker == null) return;
+    const dragEnd = (id: string, rerender: React.Dispatch<React.SetStateAction<boolean>>, dropLocationId: string, dropLocationDepth: number, dragLocationParents: Object[]) => {
+        const droppedItem = dragObject.current;
+        const borderLocationVal = borderLocation.current;
+            dragOverDiv.current = null;
+        if (droppedItem == null) return;
 
-
+        //if (borderLocationVal == null) return;
         // Refresh the elder of the two elements.
-        if (dropThisSucker.depth < dropLocationDepth) {
-            rerender = dropThisSucker.rerenderDragged;
+        if (droppedItem.depth < dropLocationDepth) {
+            rerender = droppedItem.rerenderDragged;
         }
 
-        if (dropThisSucker.objectName == dropLocation) {
+        if (droppedItem.id == dropLocationId) {
             dragObject.current = null;
             rerender((state) => !state);
             return;
         }
-        const offset = (borderLocation.current == "bottom") ? 1 : 0;
+
+
+
+        let offset = (borderLocationVal == "bottom") ? 1 : 0;
+
+        // Make it the child of the drop element.
+        if (borderLocationVal == null) {
+            offset = -1;
+        }
+
 
         // This locates the object we are dragging.
         // Removes it.
-        const idx = dropThisSucker.parent.findIndex(x => x.objectName == dropThisSucker.objectName)
+        const idx = droppedItem.parent.findIndex(x => x.id == droppedItem.id)
         if (idx !== -1) {
-            dropThisSucker.parent.splice(idx, 1);
+            droppedItem.parent.splice(idx, 1);
         }
 
         // This locates  the drop.
         // Add it.
-        const dropIdx = dragLocationParents.findIndex(x => x.objectName == dropLocation)
+        const dropIdx = dragLocationParents.findIndex(x => x.id == dropLocationId)
         const newElement = {
-            objectName: dropThisSucker.objectName,
-            subObjects: dropThisSucker.subObjects,
-            isExpanded: dropThisSucker.isExpanded ?? undefined,
-            hasChildren: dropThisSucker.hasChildren,
+            id: droppedItem.id,
+            objectName: droppedItem.objectName,
+            subObjects: droppedItem.subObjects,
+            isExpanded: droppedItem.isExpanded ?? undefined,
+            hasChildren: droppedItem.hasChildren,
             depth: dropLocationDepth + 1
 
-        }
-        console.log(newElement.depth)
-        dragLocationParents.splice(dropIdx + offset, 0, newElement);
+        } as Object
 
-        const dropDive = document.getElementById(id);
-        dropDive?.classList.remove('border-top');
-        dropDive?.classList.remove('border-bottom');
-        dropDive?.classList.remove('border-primary');
+        if (offset == -1) {
+            dragLocationParents[dropIdx].subObjects?.push(newElement);
+            dragLocationParents[dropIdx].hasChildren = true;
+            dragLocationParents[dropIdx].isExpanded = true;
+        }
+        else {
+          dragLocationParents.splice(dropIdx + offset, 0, newElement);
+        }
+
+        const dropDiv = document.getElementById(id);
+
+        dropDiv?.classList.remove('border-top');
+        dropDiv?.classList.remove('border-bottom');
+        dropDiv?.classList.remove('border-primary');
+
         borderSemaphore.current = 0;
+        borderLocation.current = null;
 
         dragObject.current = null;
-        if (dropThisSucker.depth < dropLocationDepth) {
-            dropThisSucker.rerenderDragged((state) => !state);
+        // Decide which element to rerender.
+        if (droppedItem.depth < dropLocationDepth) {
+            droppedItem.rerenderDragged((state) => !state);
         }
         else {
 

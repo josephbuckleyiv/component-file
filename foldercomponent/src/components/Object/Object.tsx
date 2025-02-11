@@ -21,6 +21,7 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
     const dragContext = useContext(DragContext)
     const [id] = useState(uuidv4());
     const dragObject = {
+        id: objectProps.id,
         objectName: objectProps.objectName,
         subObjects: objectProps.subObjects,
         hasChildren: objectProps.hasChildren,
@@ -39,14 +40,17 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
             {objectProps.subObjects?.map((object: ObjectType) => { // I know the issue is HERE!*/
                 // NEED TO SORT ACCORING TO WHO HAS CHILDREN.
                 object.depth = (objectProps.depth == undefined) ? 0 : objectProps.depth + 1;
-
+                object.id = object.id ?? uuidv4();
+                object.isExpanded = object.isExpanded ?? false;
+                if (object.subObjects == undefined) {
+                    object.subObjects = [];
+                }
                 if (!object.hasChildren) { // THis is the object analogue of 
                     return (<div key={uuidv4()}>
                         <Object loadedObject={object} parentObjects={objectProps.subObjects} parentRerender={setRerenderMyself} />
                     </div>);
                 }
                 else { // These are the object analogue of directories
-                    object.isExpanded = object.isExpanded ?? false;
                     return (<div key={uuidv4()}>
                         <Object loadedObject={object} parentObjects={objectProps.subObjects} parentRerender={setRerenderMyself} />
                     </div>);
@@ -68,7 +72,7 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
             className="box-sizing-border-box"
             onDragOver={(event: React.MouseEvent) => { event.preventDefault(); dragContext?.dragOver(id, objectProps.objectName, dragObject, event) }}
             onDragLeave={(event: React.MouseEvent) => { event.preventDefault(); dragContext?.dragLeave(id) }}
-            onDrop={(event: React.MouseEvent) => { event.preventDefault();  dragContext?.dragEnd(id, parentRerender, objectProps.objectName, objectProps.depth, parentObjects) }} 
+            onDrop={(event: React.MouseEvent) => { event.preventDefault();  dragContext?.dragEnd(id, parentRerender, objectProps.id, objectProps.depth, parentObjects) }} 
         > 
             <div id={uuidv4()} className="hover-class px-1 w-100 d-inline-flex align-items-center"
                 onClick={() => {
@@ -78,7 +82,7 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
                 setRerenderMyself(!rerenderMyself);
                 }}
             >
-                {!objectProps.hasChildren ? <FaRegFile /> : (objectProps.isExpanded ? <FaRegFolderOpen/> : <FaRegFolder />) }
+                {!objectProps.subObjects?.length ? <FaRegFile /> : (objectProps.isExpanded ? <FaRegFolderOpen/> : <FaRegFolder />) }
                 <div className="px-1"> {objectProps.objectName} </div>
             </div>
             {objectProps.hasChildren && objectProps.isExpanded && loadChildren()}
@@ -86,15 +90,3 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
     );
 }
 
-//<div
-//    id={id}
-//    className="droppable hover-class w-100 px-1 d-inline-flex align-items-center"
-//    draggable="true"
-//    onDragOver={(event: React.MouseEvent) => dragContext?.dragOver(id, fileName, { fileName, parentFiles }, event)}
-//    onDragLeave={() => dragContext?.dragLeave(id)}
-//    onDrop={() => dragContext?.dragEnd(id, rerender, fileName, parentFiles)} >
-//    <FaRegFile />
-//    <div className="px-1">
-//        <div> {fileName} </div>
-//    </div>
-//</div>
