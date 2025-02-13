@@ -6,7 +6,7 @@ import { Object as ObjectType } from '../../Types'
 // Icons and Styles
 import { FaRegFile, FaRegFolder, FaRegFolderOpen } from 'react-icons/fa';
 import './object.css'
-import { DragContext } from '../TreeView/contexts';
+import { DragContext, SelectionContext } from '../TreeView/contexts';
 
 
 export const Object = ({ loadedObject, parentObjects, parentRerender }: {
@@ -19,6 +19,7 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
     const [rerenderMyself, setRerenderMyself] = useState(false);
 
     const dragContext = useContext(DragContext)
+    const selectionContext = useContext(SelectionContext)
     const [id] = useState(uuidv4());
     const dragObject = {
         id: objectProps.id,
@@ -45,26 +46,15 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
                 if (object.subObjects == undefined) {
                     object.subObjects = [];
                 }
-                if (!object.hasChildren) { // THis is the object analogue of 
-                    return (<div key={uuidv4()}>
-                        <Object loadedObject={object} parentObjects={objectProps.subObjects} parentRerender={setRerenderMyself} />
-                    </div>);
-                }
-                else { // These are the object analogue of directories
-                    return (<div key={uuidv4()}>
-                        <Object loadedObject={object} parentObjects={objectProps.subObjects} parentRerender={setRerenderMyself} />
-                    </div>);
-                }
+
+                return (<div key={uuidv4()}>
+                    <Object loadedObject={object} parentObjects={objectProps.subObjects} parentRerender={setRerenderMyself} />
+                </div>);
             })}
-        {/*    {objectProps.files?.map((file: FileType) => <div key={uuidv4()}> <File fileName={file.fileName} parentFiles={objectProps.files} rerender={setRerender } /> </div>)} */}
         </div> 
 
     }, [objectProps, rerenderMyself]);
 
-    
-
-    
-        
     return (
         <div
             id={id}
@@ -74,10 +64,10 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
             onDragLeave={(event: React.MouseEvent) => { event.preventDefault(); dragContext?.dragLeave(id) }}
             onDrop={(event: React.MouseEvent) => { event.preventDefault();  dragContext?.dragEnd(id, parentRerender, objectProps.id, objectProps.depth, parentObjects) }} 
         > 
-            <div id={uuidv4()} className="hover-class px-1 w-100 d-inline-flex align-items-center"
+            <div id={uuidv4()} className={"hover-class px-1 w-100 d-inline-flex align-items-center" + (selectionContext?.fileToShow.current == objectProps.objectName ? " bg-bl" : "" )}
                 onClick={() => {
                 objectProps.isExpanded = !objectProps.isExpanded;
-
+                selectionContext?.getFile(objectProps.objectName)
                 setObjectProps(objectProps); // here
                 setRerenderMyself(!rerenderMyself);
                 }}

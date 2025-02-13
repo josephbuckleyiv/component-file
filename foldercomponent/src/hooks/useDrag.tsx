@@ -6,9 +6,7 @@ import { DragInfo, Object, BorderLocation } from '../Types'
 export const useDrag = () => {
     const dragObject = useRef<DragInfo | null>(null);
     const borderLocation = useRef<BorderLocation | null>(null);
-    const borderSemaphore = useRef<number>(0);
     const dragOverDiv = useRef<string | null>(null);
-    console.log(borderSemaphore.current)
 
 
 
@@ -30,7 +28,6 @@ export const useDrag = () => {
         if (borderLocation.current == null && top + 11  > event.clientY && event.clientY > top + dropDiv.offsetHeight -11 ) {
             dropDiv.classList.remove('border-top');
             dropDiv.classList.remove('border-primary');
-            borderSemaphore.current = 0;
             borderLocation.current = null;
         }
         else if (borderLocation.current == "top" && Math.abs(event.clientY - top) > 11) {
@@ -38,13 +35,11 @@ export const useDrag = () => {
             dropDiv.classList.remove('border-primary');
             console.log("here top")
             console.log(event.clientY - top)
-            borderSemaphore.current = 0;
             borderLocation.current = null;
         }
         else if (borderLocation.current == "bottom" && Math.abs(event.clientY - top - dropDiv.offsetHeight) > 11) {
             dropDiv.classList.remove('border-bottom');
             dropDiv.classList.remove('border-primary');
-            borderSemaphore.current = 0;
             console.log("here bottom")
             borderLocation.current = null;
         }
@@ -58,7 +53,6 @@ export const useDrag = () => {
                 dropDiv.classList.add('border-black');
             }
 
-                borderSemaphore.current = 1;
                 borderLocation.current = "top";
         }
         else if (Math.abs(event.clientY - top - dropDiv.offsetHeight) < 10) {
@@ -67,7 +61,6 @@ export const useDrag = () => {
                 dropDiv.classList.add('border-bottom');
                 dropDiv.classList.add('border-black');
             }
-            borderSemaphore.current = 1;
             borderLocation.current = "bottom";
         }
         
@@ -88,7 +81,6 @@ export const useDrag = () => {
         dropDive.classList.remove('border-top');
         dropDive.classList.remove('border-bottom');
         dropDive.classList.remove('border-primary');
-        borderSemaphore.current = 0;
         borderLocation.current = null;
         dragOverDiv.current = null;
     }, []);
@@ -105,15 +97,10 @@ export const useDrag = () => {
     const dragEnd = (id: string, rerender: React.Dispatch<React.SetStateAction<boolean>>, dropLocationId: string, dropLocationDepth: number, dragLocationParents: Object[]) => {
         const droppedItem = dragObject.current;
         const borderLocationVal = borderLocation.current;
-            dragOverDiv.current = null;
+        dragOverDiv.current = null;
         if (droppedItem == null) return;
 
-        //if (borderLocationVal == null) return;
-        // Refresh the elder of the two elements.
-        if (droppedItem.depth < dropLocationDepth) {
-            rerender = droppedItem.rerenderDragged;
-        }
-
+        // If we drop the same one 
         if (droppedItem.id == dropLocationId) {
             dragObject.current = null;
             rerender((state) => !state);
@@ -121,6 +108,15 @@ export const useDrag = () => {
         }
 
 
+        // Return if the dropped element is a parent of the draggedOver
+        // element.
+
+
+        //if (borderLocationVal == null) return;
+        // Refresh the elder of the two elements.
+        if (droppedItem.depth < dropLocationDepth) {
+            rerender = droppedItem.rerenderDragged;
+        }
 
         let offset = (borderLocationVal == "bottom") ? 1 : 0;
 
@@ -165,7 +161,6 @@ export const useDrag = () => {
         dropDiv?.classList.remove('border-bottom');
         dropDiv?.classList.remove('border-primary');
 
-        borderSemaphore.current = 0;
         borderLocation.current = null;
 
         dragObject.current = null;

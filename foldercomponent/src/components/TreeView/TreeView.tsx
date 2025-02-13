@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Object } from '../Object';
 
 // Hooks
-import { useDrag, useFileView } from '../../hooks';
+import { useDrag, useSelection } from '../../hooks';
 
 import example from './example_2.json';
 import { Object as ObjectType } from '../../Types';
@@ -22,7 +22,7 @@ export const TreeView = () => {
     const [id] = useState(uuidv4());
     const [tree] = useState(treeStructure);
     const dragObj = useDrag();
-    const fileObj = useFileView();
+    const fileObj = useSelection();
 
     // We will later create a dummy tree which has depth 0
     // in order to allow multiple root elements.
