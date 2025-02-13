@@ -1,4 +1,3 @@
-import internal from "stream"
 
 
 export type Folder = {
@@ -34,7 +33,7 @@ export type DragContextType = {
 
 export type SelectionContextType = {
     fileToShow: any,
-    getFile: any
+    selectFile: any
 }
 
 export type Object = {
@@ -43,7 +42,26 @@ export type Object = {
     subObjects: Object[],
     isExpanded?: boolean,
     hasChildren: boolean,
-    depth?: number
+    depth?: number,
+    deleted?: boolean
 }
+
+export type CopyAction = {
+
+}
+
+export type DeleteAction = {
+
+}
+
+export type MoveAction = {
+
+}
+
+
+export type Action = CopyAction | DeleteAction | MoveAction; 
+
+
+
 
 export type BorderLocation = "top" | "bottom";

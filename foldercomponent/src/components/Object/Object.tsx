@@ -18,10 +18,11 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
     const [objectProps, setObjectProps] = useState(loadedObject); // This is changing the rendering on every load.
     const [rerenderMyself, setRerenderMyself] = useState(false);
 
-    const dragContext = useContext(DragContext)
-    const selectionContext = useContext(SelectionContext)
+    const dragContext = useContext(DragContext);
+    const selectionContext = useContext(SelectionContext);
     const [id] = useState(uuidv4());
-    const dragObject = {
+    const [selectionId] = useState(uuidv4()); // Selectable title must have an accessible id.
+    const dragObject = { // Drag wants to know about this
         id: objectProps.id,
         objectName: objectProps.objectName,
         subObjects: objectProps.subObjects,
@@ -36,6 +37,8 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
     // object references to the subobjects to child function components.
     // New logic gives isExpanded property only to elements with children.
     const loadChildren = useCallback(() => {   
+        // Remove all values with deleted marked as true.
+        objectProps.subObjects = objectProps.subObjects.filter((x: ObjectType) => x.deleted != true);
 
         return <div key={uuidv4()} className="ms-3">
             {objectProps.subObjects?.map((object: ObjectType) => { // I know the issue is HERE!*/
@@ -64,10 +67,10 @@ export const Object = ({ loadedObject, parentObjects, parentRerender }: {
             onDragLeave={(event: React.MouseEvent) => { event.preventDefault(); dragContext?.dragLeave(id) }}
             onDrop={(event: React.MouseEvent) => { event.preventDefault();  dragContext?.dragEnd(id, parentRerender, objectProps.id, objectProps.depth, parentObjects) }} 
         > 
-            <div id={uuidv4()} className={"hover-class px-1 w-100 d-inline-flex align-items-center" + (selectionContext?.fileToShow.current == objectProps.objectName ? " bg-bl" : "" )}
+            <div id={selectionId} className={"hover-class px-1 w-100 d-inline-flex align-items-center" + (selectionContext?.fileToShow.current == objectProps.objectName ? " bg-black" : "" )}
                 onClick={() => {
-                objectProps.isExpanded = !objectProps.isExpanded;
-                selectionContext?.getFile(objectProps.objectName)
+                    objectProps.isExpanded = !objectProps.isExpanded;
+                    selectionContext?.selectFile(selectionId, objectProps, setRerenderMyself, parentRerender)
                 setObjectProps(objectProps); // here
                 setRerenderMyself(!rerenderMyself);
                 }}

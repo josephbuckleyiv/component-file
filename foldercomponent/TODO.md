@@ -16,7 +16,16 @@
 ## Multiple Root Elements.
 ### ISSUE drop parent inside itself.
 
-## Copy Functionality
+
+## MANAGE DEPTHS PROPERLY! --> To do this need a function that takes as input a depth, and updates 
+##			--> depths of all children nodes.
+
+
+## Copy Functionality CHECK --> NEXT: three dots to copy.
+
+## DELETE --> 
+
+
 ## Rollback/Undo Functionality
 
 ## Clean UI
