@@ -1,11 +1,11 @@
 import { useRef, useCallback } from "react";
 
 // Types
-import { Object } from '../Types'
+import { Object, SelectionOptions } from '../Types'
 
 // Use this in tandem with React.Provider
 // to provide state to child components.
-export const useSelection = () => {
+export const useSelection = ({ canCopy }: SelectionOptions) => {
     const fileToShow = useRef<string | null>(null); // Want to pass only this id.
     const fileSelected = useRef<Object | null>(null);
 
@@ -56,10 +56,11 @@ export const useSelection = () => {
         parentRerender: React.Dispatch<React.SetStateAction<boolean>>) => {
         // Everytime we select a file, delete all former connections.
         // We are relying on the property that only one file can be selected at a time.
-        document.removeEventListener('keydown', handleCopyEvent);
-        document.removeEventListener('keydown', handlePasteEvent);
-        document.removeEventListener('keydown', handleDeleteEvent);
-
+        if (canCopy) {
+            document.removeEventListener('keydown', handleCopyEvent);
+            document.removeEventListener('keydown', handlePasteEvent);
+            document.removeEventListener('keydown', handleDeleteEvent);
+        }
 
         if (id == fileToShow.current) { // If its the same element.
             const previousSelected = document.getElementById(fileToShow.current);
@@ -89,10 +90,13 @@ export const useSelection = () => {
         fileParentRerender.current = parentRerender;
 
         // Add the required listeners
-        document.addEventListener('keydown', handleCopyEvent);
-        document.addEventListener('keydown', handlePasteEvent);
-        document.addEventListener('keydown', handleDeleteEvent);
-    }, [])
+        if (canCopy) {
+            document.addEventListener('keydown', handleCopyEvent);
+            document.addEventListener('keydown', handlePasteEvent);
+            document.addEventListener('keydown', handleDeleteEvent);
+        }
+
+    }, [canCopy])
 
     return { fileToShow, selectFile };
 }

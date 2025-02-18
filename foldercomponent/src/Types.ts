@@ -46,6 +46,12 @@ export type Object = {
     deleted?: boolean
 }
 
+export type TreeViewItem = {
+    loadedObject: Object,
+    parentObjects?: Object[],
+    parentRerender?: React.Dispatch<React.SetStateAction<boolean>>
+}
+
 export type CopyAction = {
 
 }
@@ -65,3 +71,21 @@ export type Action = CopyAction | DeleteAction | MoveAction;
 
 
 export type BorderLocation = "top" | "bottom";
+
+
+
+/* 
+    Define types for passed options.
+*/
+
+export type TreeOptions = {
+    edit: boolean
+}
+
+export type DragOptions = {
+    canDrag: boolean
+}
+
+export type SelectionOptions = {
+    canCopy: boolean
+}

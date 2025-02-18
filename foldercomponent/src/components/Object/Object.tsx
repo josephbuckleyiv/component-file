@@ -1,7 +1,7 @@
 import { useState, useCallback, useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Object as ObjectType } from '../../Types'
+import { Object as ObjectType, TreeViewItem } from '../../Types'
 
 // Icons and Styles
 import { FaRegFile, FaRegFolder, FaRegFolderOpen } from 'react-icons/fa';
@@ -9,12 +9,9 @@ import './object.css'
 import { DragContext, SelectionContext } from '../TreeView/contexts';
 
 
-export const Object = ({ loadedObject, parentObjects, parentRerender }: {
-    loadedObject: ObjectType,
-    parentObjects: ObjectType[],
-    parentRerender: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
+export const Object = ({ loadedObject, parentObjects, parentRerender }: TreeViewItem) => {
 
+   
     const [objectProps, setObjectProps] = useState(loadedObject); // This is changing the rendering on every load.
     const [rerenderMyself, setRerenderMyself] = useState(false);
 

@@ -9,7 +9,7 @@ function FileBrowser() {
   return (
         <div className="container d-flex flex-row justify-content-between position-absolute">
           <div className="col-4 border border-3 border-primary">
-                  <TreeView />
+              <TreeView edit={false} />
               </div>
               <div className="col-7 border border-3 border-primary">
                   <View />

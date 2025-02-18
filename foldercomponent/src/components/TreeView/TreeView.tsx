@@ -8,7 +8,7 @@ import { Object } from '../Object';
 import { useDrag, useSelection } from '../../hooks';
 
 import example from './example_2.json';
-import { Object as ObjectType } from '../../Types';
+import { Object as ObjectType, TreeOptions } from '../../Types';
 import { DragContext, SelectionContext } from './contexts';
 
 
@@ -18,11 +18,11 @@ treeStructure.id = uuidv4();
 treeStructure.isExpanded = false;
 treeStructure.depth = 0;
 
-export const TreeView = () => {
+export const TreeView = ({ edit }: TreeOptions) => {
     const [id] = useState(uuidv4());
     const [tree] = useState(treeStructure);
-    const dragObj = useDrag();
-    const fileObj = useSelection();
+    const dragObj = useDrag({ canDrag: edit });
+    const fileObj = useSelection({ canCopy: edit });
 
     // We will later create a dummy tree which has depth 0
     // in order to allow multiple root elements.

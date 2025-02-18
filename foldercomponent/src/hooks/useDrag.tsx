@@ -1,9 +1,10 @@
 import { useRef, useCallback } from "react";
 
 // Types
-import { DragInfo, Object, BorderLocation } from '../Types'
+import { DragInfo, Object, BorderLocation, DragOptions } from '../Types'
 
-export const useDrag = () => {
+export const useDrag = ({ canDrag }: DragOptions) => {
+
     const dragObject = useRef<DragInfo | null>(null);
     const borderLocation = useRef<BorderLocation | null>(null);
     const dragOverDiv = useRef<string | null>(null);
@@ -174,6 +175,13 @@ export const useDrag = () => {
         }
     }
 
+    if (!canDrag) {
+        return {
+            dragOver: () => { },
+            dragLeave: () => { },
+            dragEnd: () => { }
+        }
+    }
 
     return { dragOver, dragLeave, dragEnd }
 }
